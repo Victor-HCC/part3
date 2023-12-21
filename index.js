@@ -54,8 +54,30 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end();
 })
 
+const isUnique = (name) => {
+  return !persons.some(person => person.name.toLowerCase() === name.toLowerCase())
+}
+
 app.post('/api/persons', (req, res) => {
   const body = req.body;
+
+  if(!body.name) {
+    return res.status(400).json({
+      error: 'name is required'
+    })
+  }
+  if(!body.number) {
+    return res.status(400).json({
+      error: 'number is required'
+    })
+  }
+
+  if(!isUnique(body.name)) {
+    return res.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+
   const id = Math.floor(Math.random()*100000)
   const person = {
     id: id,
