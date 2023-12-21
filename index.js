@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 const app = express();
 const PORT = 3001;
 
@@ -25,6 +25,8 @@ let persons = [
   }
 ]
 
+app.use(express.json())
+
 app.get('/api/persons', (req, res) => {
   res.status(200).json(persons);
 })
@@ -50,6 +52,19 @@ app.delete('/api/persons/:id', (req, res) => {
   const { id } = req.params;
   persons = persons.filter(person => person.id !== Number(id));
   res.status(204).end();
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body;
+  const id = Math.floor(Math.random()*100000)
+  const person = {
+    id: id,
+    name: body.name,
+    number: body.number
+  }
+  persons = persons.concat(person)
+
+  res.json(person)
 })
 
 app.listen(PORT, () => {
