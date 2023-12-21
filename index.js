@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 const PORT = 3001;
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -44,6 +44,12 @@ app.get('/api/persons/:id', (req, res) => {
   
   if(person) res.status(200).json(person)
   else res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const { id } = req.params;
+  persons = persons.filter(person => person.id !== Number(id));
+  res.status(204).end();
 })
 
 app.listen(PORT, () => {
