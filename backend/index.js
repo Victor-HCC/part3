@@ -2,7 +2,7 @@ import express, { json } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 
 let persons = [
   {
