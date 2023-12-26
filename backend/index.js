@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 const app = express();
 const PORT = 3001;
 
@@ -23,7 +24,27 @@ let persons = [
     id: 4,
     name: "Mary Poppendieck",
     number: "39-23-6423122",
-  }
+  },
+  {
+    id: 5,
+    name: "Emily Davis",
+    number: "222-333-4444",
+  },
+  {
+    id: 6,
+    name: "Chris Anderson",
+    number: "555-777-8888",
+  },
+  {
+    id: 7,
+    name: "Linda Brown",
+    number: "111-222-3333",
+  },
+  {
+    id: 8,
+    name: "Robert Miller",
+    number: "777-888-9999",
+  },
 ]
 
 
@@ -31,8 +52,10 @@ morgan.token('body', function(req, res) {
   return JSON.stringify(req.body);
 });
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
 app.get('/api/persons', (req, res) => {
   res.status(200).json(persons);
 })
