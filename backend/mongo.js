@@ -16,7 +16,11 @@ const number = process.argv[4];
 const url =
 `mongodb+srv://${USER}:${password}@cluster0.awirpst.mongodb.net/phonebook?retryWrites=true&w=majority`
 
-mongoose.connect(url)
+const connect = async () => {
+  mongoose.connect(url)
+}
+
+connect()
 
 const personSchema = new mongoose.Schema({
   name: String,
