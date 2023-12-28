@@ -85,8 +85,11 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
   const { id } = req.params;
-  persons = persons.filter(person => person.id !== Number(id));
-  res.status(204).end();
+  Person.findByIdAndDelete(id)
+    .then(result => {
+      res.status(204).end();
+    })
+    .catch(error => res.status(500).end())
 })
 
 const isUnique = (name) => {
