@@ -1,11 +1,10 @@
 import express, { json, response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import 'dotenv/config';
+import { Person } from './models/Person.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI
 
 // let persons = [
 //   {
@@ -50,28 +49,6 @@ const MONGODB_URI = process.env.MONGODB_URI
 //   },
 // ]
 
-mongoose.connect(MONGODB_URI)
-  .then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-})
-
-personSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-const Person = mongoose.model('Person', personSchema)
 
 morgan.token('body', function(req, res) {
   return JSON.stringify(req.body);
@@ -85,8 +62,7 @@ app.get('/api/persons', (req, res) => {
   Person
   .find({})
   .then(persons=> {
-    const response = persons.map(person => ({name: person.name, number: person.number}))
-    res.status(200).json(response);
+    res.status(200).json(persons);
   })
 })
 
@@ -131,30 +107,35 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  if(!isUnique(body.name)) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  // if(!isUnique(body.name)) {
+  //   return res.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
 
-  const id = Math.floor(Math.random()*100000)
-  const person = {
-    id: id,
+  // const id = Math.floor(Math.random()*100000)
+  const person = new Person ({
     name: body.name,
     number: body.number
-  }
-  persons = persons.concat(person)
-
-  res.json(person)
+  })
+  
+  person.save().then(savedPerson => {
+    res.json(savedPerson);
+  })
 })
-
-process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
-    console.log('MongoDB connection disconnected through app termination');
-    process.exit(0);
-  });
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
+
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT. Closing MongoDB connection and exiting...');
+  Person.connection.close(() => {
+    console.log('MongoDB connection closed.');
+    server.close(() => {
+      console.log('Express server closed.');
+      process.exit(0);
+    });
+  });
+});
