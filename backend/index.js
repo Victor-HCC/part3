@@ -75,21 +75,28 @@ app.get('/info', (req, res) => {
   `)
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
-  const person = persons.find(person => person.id === Number(id))
   
-  if(person) res.status(200).json(person)
-  else res.status(404).end()
+  Person.findById(id)
+    .then(person => {
+      if(person) {
+        res.status(200).json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+  
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
   Person.findByIdAndDelete(id)
     .then(result => {
       res.status(204).end();
     })
-    .catch(error => res.status(500).end())
+    .catch(error => next(error))
 })
 
 const isUnique = (name) => {
@@ -126,6 +133,19 @@ app.post('/api/persons', (req, res) => {
     res.json(savedPerson);
   })
 })
+
+const errorHandler = (error, req, res, next) => {
+  console.log('middleware');
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
