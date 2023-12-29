@@ -99,6 +99,20 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
+  const { name, number } = req.body;
+  const person = {
+    name,
+    number
+  }
+  Person.findByIdAndUpdate(id, person, { new: true })
+    .then(updatedPerson => {
+      res.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
 const isUnique = (name) => {
   return !persons.some(person => person.name.toLowerCase() === name.toLowerCase())
 }
