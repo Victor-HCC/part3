@@ -66,13 +66,17 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/info', (req, res) => {
-  const total = persons.length;
-
-  res.send(`
-    <p>Phonebook has info for ${total} people</p>
-    ${new Date()}
-  `)
+app.get('/info', (req, res, next) => {
+  
+  Person.countDocuments({})
+    .then(total => {
+      res.send(`
+        <p>Phonebook has info for ${total} people</p>
+        ${new Date()}
+      `)
+    })
+    .catch(error => next(error))
+  
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
