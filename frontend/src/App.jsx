@@ -36,7 +36,9 @@ const App = () => {
             }, 4000)
           })
           .catch(error => {
-            setMessage({text:`Information of ${exist.name} has already been removed from server`, type: 'error'})
+            // console.log(error.response.data.error);
+            // setMessage({text:`Information of ${exist.name} has already been removed from server`, type: 'error'})
+            setMessage({text:`${error.response.data.error}`, type: 'error'})
             setTimeout(() => {
               setMessage(null)
             }, 4000)
