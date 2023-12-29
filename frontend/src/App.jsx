@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Persons from './components/Persons'
@@ -79,17 +78,6 @@ const App = () => {
     SetNewNumber(e.target.value)
   }
 
-  const handleFilter = (e) => {
-    const value = e.target.value.toLowerCase().trim();
-    if(value) {
-      setFiltered(persons.filter(person => person.name.toLowerCase().includes(value)))
-      setFilter(true)
-    } else {
-      setFiltered([])
-      setFilter(false)
-    }
-  }
-
   useEffect(() => {
     if(filterWord.length > 0) {
       setFiltered(persons.filter(person => person.name.toLowerCase().includes(filterWord)))
@@ -98,7 +86,7 @@ const App = () => {
       setFiltered([])
       setFilter(false)
     }
-  }, [filterWord])
+  }, [filterWord, persons])
 
   const handleFilter2 = (e) => {
     const value = e.target.value.toLowerCase().trim()

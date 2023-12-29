@@ -1,5 +1,5 @@
-import React from 'react'
 import { deleteById } from '../services/personsServices'
+import PropTypes from 'prop-types'
 
 const Persons = ({ filter, filtered, persons, setPersons }) => {
 
@@ -23,5 +23,12 @@ const Persons = ({ filter, filtered, persons, setPersons }) => {
     </div>
   )
 }
+
+Persons.propTypes = {
+  filter: PropTypes.bool,
+  filtered: PropTypes.arrayOf(PropTypes.object),
+  persons: PropTypes.arrayOf(PropTypes.object),
+  setPersons: PropTypes.func,
+};
 
 export default Persons

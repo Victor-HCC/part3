@@ -1,11 +1,12 @@
-import mongoose from "mongoose";
-import 'dotenv/config';
-import uniqueValidator from 'mongoose-unique-validator';
+import mongoose from 'mongoose'
+import 'dotenv/config'
+import uniqueValidator from 'mongoose-unique-validator'
 
-const MONGODB_URI = process.env.MONGODB_URI;
+// eslint-disable-next-line no-undef
+const MONGODB_URI = process.env.MONGODB_URI
 
 mongoose.connect(MONGODB_URI)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch((error) => {
@@ -27,7 +28,7 @@ const personSchema = new mongoose.Schema({
   },
 })
 
-personSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -37,7 +38,7 @@ personSchema.set('toJSON', {
   }
 })
 
-const Person = mongoose.model('Person', personSchema);
+const Person = mongoose.model('Person', personSchema)
 
 export {
   Person

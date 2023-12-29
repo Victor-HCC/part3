@@ -1,10 +1,11 @@
-import express, { json, response } from 'express';
-import morgan from 'morgan';
-import cors from 'cors';
-import 'dotenv/config';
-import { Person } from './models/Person.js';
-const app = express();
-const PORT = process.env.PORT || 3000;
+import express from 'express'
+import morgan from 'morgan'
+import cors from 'cors'
+import 'dotenv/config'
+import { Person } from './models/Person.js'
+const app = express()
+// eslint-disable-next-line no-undef
+const PORT = process.env.PORT || 3000
 
 // let persons = [
 //   {
@@ -50,9 +51,9 @@ const PORT = process.env.PORT || 3000;
 // ]
 
 
-morgan.token('body', function(req, res) {
-  return JSON.stringify(req.body);
-});
+morgan.token('body', function(req) {
+  return JSON.stringify(req.body)
+})
 
 app.use(cors())
 app.use(express.json())
@@ -60,10 +61,10 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 app.get('/api/persons', (req, res) => {
   Person
-  .find({})
-  .then(persons=> {
-    res.status(200).json(persons);
-  })
+    .find({})
+    .then(persons=> {
+      res.status(200).json(persons)
+    })
 })
 
 app.get('/info', (req, res, next) => {
@@ -80,7 +81,7 @@ app.get('/info', (req, res, next) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
   
   Person.findById(id)
     .then(person => {
@@ -95,17 +96,17 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
   Person.findByIdAndDelete(id)
-    .then(result => {
-      res.status(204).end();
+    .then(() => {
+      res.status(204).end()
     })
     .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const { id } = req.params;
-  const { name, number } = req.body;
+  const { id } = req.params
+  const { name, number } = req.body
   const person = {
     name,
     number
@@ -118,7 +119,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 })
 
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body;
+  const body = req.body
 
   if(!body.name) {
     return res.status(400).json({
@@ -138,13 +139,13 @@ app.post('/api/persons', (req, res, next) => {
   
   person.save()
     .then(savedPerson => {
-      res.json(savedPerson);
+      res.json(savedPerson)
     })
     .catch(error => next(error))
 })
 
 const errorHandler = (error, req, res, next) => {
-  console.log('middleware');
+  console.log('middleware')
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -156,20 +157,22 @@ const errorHandler = (error, req, res, next) => {
   next(error)
 }
 
-app.use(errorHandler);
+app.use(errorHandler)
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`)
 })
 
 
+// eslint-disable-next-line no-undef
 process.on('SIGINT', () => {
-  console.log('Received SIGINT. Closing MongoDB connection and exiting...');
+  console.log('Received SIGINT. Closing MongoDB connection and exiting...')
   Person.connection.close(() => {
-    console.log('MongoDB connection closed.');
-    server.close(() => {
-      console.log('Express server closed.');
-      process.exit(0);
-    });
-  });
-});
+    console.log('MongoDB connection closed.')
+    app.close(() => {
+      console.log('Express server closed.')
+      // eslint-disable-next-line no-undef
+      process.exit(0)
+    })
+  })
+})
